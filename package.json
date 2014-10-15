@@ -1,0 +1,22 @@
+{
+  "name": "Maze-API",
+  "version": "1.0.0",
+  "description": "Learning NodeJS and friends",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qwinzeth/Maze-API.git"
+  },
+  "author": "Matt Stowe",
+  "license": "None",
+  "bugs": {
+    "url": "https://github.com/qwinzeth/Maze-API/issues"
+  },
+  "homepage": "https://github.com/qwinzeth/Maze-API",
+  "dependencies": {
+    "express": "^4.9.7"
+  }
+}
