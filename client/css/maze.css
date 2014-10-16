@@ -1,0 +1,10 @@
+.maze-container{
+	position: relative;
+	width: 400px;
+	height: 400px;
+}
+
+.maze-wall{
+	position: absolute;
+	border: 1px solid black;
+}
