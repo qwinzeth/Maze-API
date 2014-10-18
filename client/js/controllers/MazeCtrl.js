@@ -1,12 +1,13 @@
 var mazeApp = angular.module('mazeApp', []);
 
-mazeApp.controller('MazeCtrl', function ($scope) {
-  $scope.mazeWalls = [
-    {'id': 0,
-     'x1': 50,
-     'x2': 100,
-     'y1': 100,
-     'y2': 125,
-     'color': '#0000FF'}
-  ];
+mazeApp.controller('MazeCtrl', function ($scope, $http) {
+	$scope.mazeWalls = [];
+	
+	$scope.getMaze=function getMaze(){
+		$http.get('/api/maze/'+$('#txtMazeID').val()).success(getMazeCompleted);
+	}
+  
+	function getMazeCompleted(data){
+		$scope.mazeWalls=data;
+	}
 });

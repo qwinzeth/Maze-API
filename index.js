@@ -37,9 +37,9 @@ function mazeCSSRoute(req, res){
 	serveFile(res, 'client/css/maze.css', 'text/css');
 }
 
-function getMazeAPIRoute(req, res, id){id=0;
+function getMazeByIDAPIRoute(req, res){
 	res.writeHead(200, {'Content-Type': 'application/json'});
-	res.end('[{"id": '+id+', "x1": 50, "x2": 100, "y1": 25, "y2": 50, "color": "#0000FF"}]');
+	res.end('[{"id": "'+req.params.id+'", "x1": 50, "x2": 100, "y1": 25, "y2": 50, "color": "#0000FF"}]');
 }
 
 app.get('/', defaultRoute);
@@ -48,7 +48,7 @@ app.get('/js/mazeclientscript.js', mazeClientJSRoute);
 app.get('/js/controllers/MazeCtrl.js', mazeCtrlJSRoute);
 app.get('/css/maze.css', mazeCSSRoute);
 
-app.get('/api/maze', getMazeAPIRoute);
+app.get('/api/maze/:id', getMazeByIDAPIRoute);
 
 function listen(){
 	console.log(server.address());

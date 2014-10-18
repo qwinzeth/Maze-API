@@ -6,14 +6,13 @@
 		<link rel="stylesheet" type="text/css" href="css/maze.css">
 		<script type='text/javascript' src='js/jquery.js'></script>
 		<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.min.js'></script>
-		<script type='text/javascript' src='js/mazeclientscript.js'></script>
 		<script type='text/javascript' src='js/controllers/MazeCtrl.js'></script>
 	</head>
 	<body ng-controller='MazeCtrl'>
-		<div class='maze-container' ng-repeat='wall in mazeWalls'>
-			<div class='maze-wall' style="left: {{wall.x1}}px; top: {{wall.y1}}px; width: {{wall.x2-wall.x1}}px; height: {{wall.y2-wall.y1}}px; background-color: {{wall.color}}">{{wall.id}}</div>
+		<div class='maze-container'>
+			<div class='maze-wall' ng-repeat='wall in mazeWalls' style="left: {{wall.x1}}px; top: {{wall.y1}}px; width: {{wall.x2-wall.x1}}px; height: {{wall.y2-wall.y1}}px; background-color: {{wall.color}}">{{wall.id}}</div>
 		</div>
 		<div>Maze ID: <input id='txtMazeID' value='1' /></div>
-		<div><input type='button' id='btnGetMaze' value='Get Maze' /></div>{{'Angular!'}}
+		<div><input type='button' id='btnGetMaze' value='Get Maze' ng-click='getMaze();' /></div>
 	</body>
 </html>
