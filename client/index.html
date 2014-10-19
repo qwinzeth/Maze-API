@@ -10,6 +10,7 @@
 	</head>
 	<body ng-controller='MazeCtrl'>
 		<div class='maze-container'>
+			<div class='maze-error'>{{mazeError}}</div>
 			<div class='maze-wall' ng-repeat='wall in mazeWalls' style="left: {{wall.x1}}px; top: {{wall.y1}}px; width: {{wall.x2-wall.x1}}px; height: {{wall.y2-wall.y1}}px; background-color: {{wall.color}}">{{wall.id}}</div>
 		</div>
 		<div>Maze ID: <input id='txtMazeID' value='1' /></div>
