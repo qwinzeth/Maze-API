@@ -1,7 +1,8 @@
 var port=20756;
 var express=require('express');
 var fs=require('fs');
-var getMaze=require('./server/getmaze');
+var getMaze=require('./server/getmaze.js');
+var postMazeWall=require('./server/postMazeWall.js');
 
 //DB
 var dbhandler=require('./server/dbhandler');
@@ -14,6 +15,12 @@ function dbConnected(err, mongoose){
 
 	//Routing
 	var app=express();
+
+	// configure app to use bodyParser()
+	// this will let us get the data from a POST
+	var bodyParser=require('body-parser');
+	app.use(bodyParser.urlencoded({ extended: true }));
+	app.use(bodyParser.json());
 
 	function serveFile(res, uri, mimeType){
 		fs.readFile(uri, readFileCompleted);
@@ -50,7 +57,7 @@ function dbConnected(err, mongoose){
 	}
 
 	function getMazeByIDAPIRoute(req, res){
-		getMaze(mongoose, req.params.id, gotMaze);
+		getMaze(req.params.id, gotMaze);
 
 		function gotMaze(err, mazewalls){
 			if(!err){
@@ -62,6 +69,21 @@ function dbConnected(err, mongoose){
 			}
 		}
 	}
+	
+	function postMazeWallRoute(req, res){
+console.log(req.body);
+		postMazeWall(req.body.mazewall, mazeWallPosted);
+		
+		function mazeWallPosted(err){
+			if(err){
+				res.writeHead(500, {'Content-Type': 'text/plain'});
+				res.end('Error: '+err);
+			}else{
+				res.writeHead(204);
+				res.end();
+			}
+		}
+	}
 
 	app.get('/', defaultRoute);
 	app.get('/js/jquery.js', jQueryRoute);
@@ -70,6 +92,7 @@ function dbConnected(err, mongoose){
 	app.get('/css/maze.css', mazeCSSRoute);
 
 	app.get('/api/maze/:id', getMazeByIDAPIRoute);
+	app.post('/api/maze',postMazeWallRoute);
 
 	var server=app.listen(port, listen);
 

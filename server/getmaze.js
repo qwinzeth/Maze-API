@@ -1,6 +1,6 @@
-function getMazeByID(mongoose, mazeid, callback){
-	var mazeModel=mongoose.model('mazewall');
-	var maze=mazeModel.find({mazeid: mazeid}, gotMazes);
+function getMazeByID(mazeid, callback){
+	var MazeWall=require('./models/MazeWall.js');
+	var maze=MazeWall.find({mazeid: mazeid}, gotMazes);
 	
 	function gotMazes(err, mazewalls){
 		if(err){

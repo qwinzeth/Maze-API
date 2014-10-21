@@ -3,9 +3,15 @@
 	width: 400px;
 	height: 400px;
 	border: 1px solid black;
+	display: inline-block;
 }
 
 .maze-wall{
 	position: absolute;
 	border: 1px solid black;
+}
+
+.maze-new-maze-wall-controls{
+	display: inline-block;
+	vertical-align: top;
 }
