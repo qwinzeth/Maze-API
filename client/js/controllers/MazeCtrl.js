@@ -7,6 +7,7 @@ mazeApp.controller('MazeCtrl', function ($scope, $http) {
 	
 	$scope.getMaze=getMaze;
 	$scope.postMazeWall=postMazeWall;
+	$scope.updateMazeWall=updateMazeWall;
 	$scope.deleteMazeWall=deleteMazeWall;
 	
 	$scope.newMazeWall={
@@ -33,7 +34,15 @@ mazeApp.controller('MazeCtrl', function ($scope, $http) {
 		
 		function postMazeWallCompleted(){
 			$scope.mazeError="";
-			$scope.newMazeWall.id++;
+			getMaze();
+		}
+	}
+	
+	function updateMazeWall(){
+		$http.put('/api/mazewall', {mazewall: $scope.newMazeWall}).success(putMazeWallCompleted).error(showError);
+		
+		function putMazeWallCompleted(){
+			$scope.mazeError="";
 			getMaze();
 		}
 	}

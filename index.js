@@ -3,6 +3,7 @@ var express=require('express');
 var fs=require('fs');
 var getMaze=require('./server/getmaze.js');
 var postMazeWall=require('./server/postMazeWall.js');
+var updateMazeWall=require('./server/updateMazeWall.js');
 var deleteMazeWall=require('./server/deleteMazeWall.js');
 
 //DB
@@ -85,6 +86,20 @@ function dbConnected(err, mongoose){
 		}
 	}
 	
+	function putMazeWallRoute(req, res){
+		updateMazeWall(req.body.mazewall, mazeWallUpdated);
+		
+		function mazeWallUpdated(err){
+			if(err){
+				res.writeHead(500, {'Content-Type': 'text/plain'});
+				res.end('Error: '+err);
+			}else{
+				res.writeHead(204);
+				res.end();
+			}
+		}
+	}
+
 	function deleteMazeWallRoute(req, res){
 		deleteMazeWall(req.params.id, deletedMazeWall);
 		
@@ -107,6 +122,7 @@ function dbConnected(err, mongoose){
 
 	app.get('/api/maze/:id', getMazeByIDAPIRoute);
 	app.post('/api/mazewall',postMazeWallRoute);
+	app.put('/api/mazewall', putMazeWallRoute);
 	app.delete('/api/mazewall/:id', deleteMazeWallRoute);
 
 	var server=app.listen(port, listen);
