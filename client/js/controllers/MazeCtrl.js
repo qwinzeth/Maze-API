@@ -5,6 +5,8 @@ mazeApp.controller('MazeCtrl', function ($scope, $http) {
 	$scope.mazeError="";
 	$scope.mazeID=0;
 	
+	$scope.selectWall=selectMazeWall;
+	
 	$scope.getMaze=getMaze;
 	$scope.postMazeWall=postMazeWall;
 	$scope.updateMazeWall=updateMazeWall;
@@ -19,6 +21,16 @@ mazeApp.controller('MazeCtrl', function ($scope, $http) {
 		y2: 220,
 		color: '#00FF00'
 	};
+	
+	function selectMazeWall(mazeWall){
+		$scope.newMazeWall.mazeid=mazeWall.mazeid;
+		$scope.newMazeWall.id=mazeWall.id;
+		$scope.newMazeWall.x1=mazeWall.x1;
+		$scope.newMazeWall.x2=mazeWall.x2;
+		$scope.newMazeWall.y1=mazeWall.y1;
+		$scope.newMazeWall.y2=mazeWall.y2;
+		$scope.newMazeWall.color=mazeWall.color;
+	}
 	
 	function getMaze(){
 		$http.get('/api/maze/'+$scope.mazeID).success(getMazeCompleted).error(showError);
