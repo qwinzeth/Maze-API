@@ -3,6 +3,7 @@ var express=require('express');
 var fs=require('fs');
 var getMaze=require('./server/getmaze.js');
 var postMazeWall=require('./server/postMazeWall.js');
+var deleteMazeWall=require('./server/deleteMazeWall.js');
 
 //DB
 var dbhandler=require('./server/dbhandler');
@@ -71,10 +72,23 @@ function dbConnected(err, mongoose){
 	}
 	
 	function postMazeWallRoute(req, res){
-console.log(req.body);
 		postMazeWall(req.body.mazewall, mazeWallPosted);
 		
 		function mazeWallPosted(err){
+			if(err){
+				res.writeHead(500, {'Content-Type': 'text/plain'});
+				res.end('Error: '+err);
+			}else{
+				res.writeHead(204);
+				res.end();
+			}
+		}
+	}
+	
+	function deleteMazeWallRoute(req, res){
+		deleteMazeWall(req.params.id, deletedMazeWall);
+		
+		function deletedMazeWall(err, mazewalls){
 			if(err){
 				res.writeHead(500, {'Content-Type': 'text/plain'});
 				res.end('Error: '+err);
@@ -92,7 +106,8 @@ console.log(req.body);
 	app.get('/css/maze.css', mazeCSSRoute);
 
 	app.get('/api/maze/:id', getMazeByIDAPIRoute);
-	app.post('/api/maze',postMazeWallRoute);
+	app.post('/api/mazewall',postMazeWallRoute);
+	app.delete('/api/mazewall/:id', deleteMazeWallRoute);
 
 	var server=app.listen(port, listen);
 

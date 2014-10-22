@@ -12,19 +12,20 @@
 		<div>
 			<div class='maze-container'>
 				<div class='maze-error'>{{mazeError}}</div>
-				<div class='maze-wall' ng-repeat='wall in mazeWalls' style="left: {{wall.x1}}px; top: {{wall.y1}}px; width: {{wall.x2-wall.x1}}px; height: {{wall.y2-wall.y1}}px; background-color: {{wall.color}}">{{wall.id}}</div>
+				<div class='maze-wall' ng-repeat='wall in mazeWalls' style="left: {{wall.x1}}px; top: {{wall.y1}}px; width: {{wall.x2-wall.x1-1}}px; height: {{wall.y2-wall.y1-1}}px; background-color: {{wall.color}}">{{wall.id}}</div>
 			</div>
 			<div class='maze-new-maze-wall-controls'>
-				<div>MazeWallID: <input value='{{newMazeWall.id}}' /></div>
-				<div>x1: <input value='{{newMazeWall.x1}}' /></div>
-				<div>x2: <input value='{{newMazeWall.x2}}' /></div>
-				<div>y1: <input value='{{newMazeWall.y1}}' /></div>
-				<div>y2: <input value='{{newMazeWall.y2}}' /></div>
-				<div>color: <input value='{{newMazeWall.color}}' /></div>
+				<div>MazeWallID: <input ng-model='newMazeWall.id' /></div>
+				<div>x1: <input ng-model='newMazeWall.x1' /></div>
+				<div>x2: <input ng-model='newMazeWall.x2' /></div>
+				<div>y1: <input ng-model='newMazeWall.y1' /></div>
+				<div>y2: <input ng-model='newMazeWall.y2' /></div>
+				<div>color: <input ng-model='newMazeWall.color' /></div>
 				<div><input type='button' value='New Maze Wall' ng-click='postMazeWall();' /></div>
+				<div><input type='button' value='Delete Maze Wall' ng-click='deleteMazeWall();' /></div>
 			</div>
 		</div>
-		<div>Maze ID: <input value='{{mazeID}}' /></div>
+		<div>Maze ID: <input ng-model='mazeID' /></div>
 		<div><input type='button' value='Get Maze' ng-click='getMaze();' /></div>
 	</body>
 </html>
