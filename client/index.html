@@ -12,18 +12,18 @@
 		<div>
 			<div class='maze-container'>
 				<div class='maze-error'>{{mazeError}}</div>
-				<div class='maze-wall' ng-repeat='wall in mazeWalls' ng-click='selectWall(wall);' style="left: {{wall.x1}}px; top: {{wall.y1}}px; width: {{wall.x2-wall.x1-1}}px; height: {{wall.y2-wall.y1-1}}px; background-color: {{wall.color}}">{{wall.id}}</div>
+				<div class='maze-wall' ng-class='{"maze-wall-selected": newMazeWall._id==wall._id}' ng-repeat='wall in mazeWalls' ng-click='selectWall(wall);' style="left: {{wall.x1}}px; top: {{wall.y1}}px; width: {{wall.x2-wall.x1-1}}px; height: {{wall.y2-wall.y1-1}}px; background-color: {{wall.color}}"></div>
+				<div class='maze-potential-wall' style="left: {{newMazeWall.x1}}px; top: {{newMazeWall.y1}}px; width: {{newMazeWall.width-1}}px; height: {{newMazeWall.height-1}}px; background-color: {{newMazeWall.color}}"></div>
 			</div>
 			<div class='maze-new-maze-wall-controls'>
-				<div>MazeWallID: <input ng-model='newMazeWall.id' /></div>
-				<div>x1: <input ng-model='newMazeWall.x1' /></div>
-				<div>x2: <input ng-model='newMazeWall.x2' /></div>
-				<div>y1: <input ng-model='newMazeWall.y1' /></div>
-				<div>y2: <input ng-model='newMazeWall.y2' /></div>
+				<div>x: <input ng-model='newMazeWall.x1' /></div>
+				<div>y: <input ng-model='newMazeWall.y1' /></div>
+				<div>width: <input ng-model='newMazeWall.width' /></div>
+				<div>height: <input ng-model='newMazeWall.height' /></div>
 				<div>color: <input ng-model='newMazeWall.color' /></div>
 				<div><input type='button' value='New Maze Wall' ng-click='postMazeWall();' /></div>
-				<div><input type='button' value='Update Maze Wall' ng-click='updateMazeWall();' /></div>
-				<div><input type='button' value='Delete Maze Wall' ng-click='deleteMazeWall();' /></div>
+				<div ng-show='newMazeWall._id'><input type='button' value='Update Maze Wall' ng-click='updateMazeWall();' /></div>
+				<div ng-show='newMazeWall._id'><input type='button' value='Delete Maze Wall' ng-click='deleteMazeWall();' /></div>
 			</div>
 		</div>
 		<div>Maze ID: <input ng-model='mazeID' /></div>

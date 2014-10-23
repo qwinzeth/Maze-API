@@ -11,7 +11,19 @@
 	border: 1px solid black;
 }
 
+.maze-wall-selected{
+	border: 1px solid #FFFF00;
+}
+
+.maze-potential-wall{
+	position: absolute;
+	border: 1px solid black;
+	opacity: .3;
+	z-index: 2;
+}
+
 .maze-new-maze-wall-controls{
 	display: inline-block;
 	vertical-align: top;
 }
+

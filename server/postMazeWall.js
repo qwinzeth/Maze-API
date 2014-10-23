@@ -1,8 +1,8 @@
 function postMazeWall(mazewall, callback){
 	var MazeWall=require('./models/MazeWall.js');
-	var newMazeWall=new MazeWall();
+	var newMazeWall=new MazeWall();	
+	newMazeWall._id=mazewall._id;
 	newMazeWall.mazeid=mazewall.mazeid;
-	newMazeWall.id=mazewall.id;
 	newMazeWall.x1=mazewall.x1;
 	newMazeWall.x2=mazewall.x2;
 	newMazeWall.y1=mazewall.y1;

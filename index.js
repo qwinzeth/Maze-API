@@ -73,6 +73,7 @@ function dbConnected(err, mongoose){
 	}
 	
 	function postMazeWallRoute(req, res){
+		req.body.mazewall._id=new mongoose.Types.ObjectId();
 		postMazeWall(req.body.mazewall, mazeWallPosted);
 		
 		function mazeWallPosted(err){
@@ -80,8 +81,7 @@ function dbConnected(err, mongoose){
 				res.writeHead(500, {'Content-Type': 'text/plain'});
 				res.end('Error: '+err);
 			}else{
-				res.writeHead(204);
-				res.end();
+				res.json({_id: req.body.mazewall._id});
 			}
 		}
 	}

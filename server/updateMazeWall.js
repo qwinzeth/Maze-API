@@ -1,7 +1,7 @@
 function updateMazeWall(mazewall, callback){
 	var MazeWall=require('./models/MazeWall.js');
 	
-	MazeWall.update({id: mazewall.id}, mazewall, mazeSaved);
+	MazeWall.update({_id: mazewall._id}, mazewall, mazeSaved);
 	
 	function mazeSaved(err){
 		callback(err);

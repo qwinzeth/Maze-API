@@ -2,7 +2,7 @@ var mongoose=require('mongoose');
 
 var mazewallSchema=new mongoose.Schema({
 	mazeid: Number,
-	id: Number,
+	_id: mongoose.Schema.Types.ObjectId,
 	x1: Number,
 	x2: Number,
 	y1: Number,
