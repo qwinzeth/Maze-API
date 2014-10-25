@@ -24,7 +24,6 @@ mazeApp.controller('MazeCtrl', function ($scope, $http) {
 	};
 	
 	function selectMazeWall(mazeWall){
-		$scope.newMazeWall.mazeid=mazeWall.mazeid;
 		$scope.newMazeWall._id=mazeWall._id;
 		$scope.newMazeWall.x1=mazeWall.x1;
 		$scope.newMazeWall.y1=mazeWall.y1;
@@ -85,5 +84,4 @@ mazeApp.controller('MazeCtrl', function ($scope, $http) {
 	function showError(err){
 		$scope.mazeError=err;
 	}
-	
 });

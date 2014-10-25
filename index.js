@@ -24,40 +24,7 @@ function dbConnected(err, mongoose){
 	app.use(bodyParser.urlencoded({ extended: true }));
 	app.use(bodyParser.json());
 
-	function serveFile(res, uri, mimeType){
-		fs.readFile(uri, readFileCompleted);
-
-		function readFileCompleted(err, data){
-			if(!err){
-				res.writeHead(200, {'Content-Type': mimeType});
-				res.end(data.toString());
-			}else{
-				res.writeHead(500, {'Content-Type': 'text/plain'});
-				res.end('Error: '+err+'\n');
-			}
-		}
-	};
-
-	function defaultRoute(req, res){
-		serveFile(res, "client/index.html", "text/html");
-	}
-
-	function jQueryRoute(req, res){
-		serveFile(res, 'client/js/jquery.min.js', 'text/javascript');
-	}
-
-	function mazeClientJSRoute(req, res){
-		serveFile(res, 'client/js/mazeclientscript.js', 'text/javascript');
-	}
-
-	function mazeCtrlJSRoute(req, res){
-		serveFile(res, 'client/js/controllers/MazeCtrl.js', 'text/javascript');
-	}
-
-	function mazeCSSRoute(req, res){
-		serveFile(res, 'client/css/maze.css', 'text/css');
-	}
-
+	// GET a single maze: /api/maze/:id
 	function getMazeByIDAPIRoute(req, res){
 		getMaze(req.params.id, gotMaze);
 
@@ -71,7 +38,18 @@ function dbConnected(err, mongoose){
 			}
 		}
 	}
-	
+
+	// POST a new maze wall: /api/mazewall
+	// The body must contain the JSON for the new maze wall.
+	/* mazewall={
+			mazeid: Number,
+			x1: Number,
+			x2: Number,
+			y1: Number,
+			y2: Number,
+			color: String
+		}
+	*/
 	function postMazeWallRoute(req, res){
 		req.body.mazewall._id=new mongoose.Types.ObjectId();
 		postMazeWall(req.body.mazewall, mazeWallPosted);
@@ -86,6 +64,18 @@ function dbConnected(err, mongoose){
 		}
 	}
 	
+	// PUT an update to an existing maze wall: /api/mazewall
+	// The body must contain the JSON for the updated maze wall.
+	/* mazewall={
+			_id: ObjectId (from GET)
+			mazeid: Number,
+			x1: Number,
+			x2: Number,
+			y1: Number,
+			y2: Number,
+			color: String
+		}
+	*/
 	function putMazeWallRoute(req, res){
 		updateMazeWall(req.body.mazewall, mazeWallUpdated);
 		
@@ -100,6 +90,7 @@ function dbConnected(err, mongoose){
 		}
 	}
 
+	// DELETE a maze wall: /api/mazewall:id
 	function deleteMazeWallRoute(req, res){
 		deleteMazeWall(req.params.id, deletedMazeWall);
 		
@@ -114,11 +105,7 @@ function dbConnected(err, mongoose){
 		}
 	}
 
-	app.get('/', defaultRoute);
-	app.get('/js/jquery.js', jQueryRoute);
-	app.get('/js/mazeclientscript.js', mazeClientJSRoute);
-	app.get('/js/controllers/MazeCtrl.js', mazeCtrlJSRoute);
-	app.get('/css/maze.css', mazeCSSRoute);
+	app.use('/', express.static('./client/'));
 
 	app.get('/api/maze/:id', getMazeByIDAPIRoute);
 	app.post('/api/mazewall',postMazeWallRoute);
