@@ -6,6 +6,12 @@
 	display: inline-block;
 }
 
+.maze-player{
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+
 .maze-wall{
 	position: absolute;
 	border: 1px solid black;

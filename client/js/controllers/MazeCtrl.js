@@ -3,9 +3,19 @@ var mazeApp = angular.module('mazeApp', []);
 mazeApp.controller('MazeCtrl', function ($scope, $http) {
 	angular.element(document).ready(getMaze);
 
+	$scope.player={
+		x: 0,
+		y: 0,
+		jump: 5,
+		width: 12,
+		height: 29
+	};
+
 	$scope.mazeWalls=[];
 	$scope.mazeError="";
 	$scope.mazeID=0;
+
+	$scope.keyDown=keyDown;
 
 	$scope.selectWall=selectMazeWall;
 	
@@ -23,6 +33,40 @@ mazeApp.controller('MazeCtrl', function ($scope, $http) {
 		color: '#00FF00'
 	};
 	
+	function keyDown(event){
+		switch(event.keyCode){
+		case 37:
+			attemptPlayerMove($scope.player.x-parseInt($scope.player.jump), $scope.player.y);
+		break;
+		case 39:
+			attemptPlayerMove($scope.player.x+parseInt($scope.player.jump), $scope.player.y);
+		break;
+		case 38:
+			attemptPlayerMove($scope.player.x, $scope.player.y-parseInt($scope.player.jump));
+		break;
+		case 40:
+			attemptPlayerMove($scope.player.x, $scope.player.y+parseInt($scope.player.jump));
+		break;
+		}
+	}
+
+	function attemptPlayerMove(newx, newy){
+		if(newx<0||newx>=$('.maze-container').width()-$scope.player.width
+		||newy<0||newy>=$('.maze-container').height()-$scope.player.height){
+			return;
+		}
+		
+		for(var i=0;i<$scope.mazeWalls.length;i++){
+			var cwall=$scope.mazeWalls[i];
+			if(newx+$scope.player.width>=cwall.x1&&newx<=cwall.x2&&newy+$scope.player.height>=cwall.y1&&newy<=cwall.y2){
+				return;
+			}
+		}
+		
+		$scope.player.x=newx;
+		$scope.player.y=newy;
+	}	
+	
 	function selectMazeWall(mazeWall){
 		$scope.newMazeWall._id=mazeWall._id;
 		$scope.newMazeWall.x1=mazeWall.x1;
@@ -38,6 +82,12 @@ mazeApp.controller('MazeCtrl', function ($scope, $http) {
 		function getMazeCompleted(data){
 			$scope.mazeError="";
 			$scope.mazeWalls=data;
+			for(var i=0;i<$scope.mazeWalls.length;i++){
+				var wall=$scope.mazeWalls[i];
+				wall.cssStyle={left: wall.x1+'px', 'top': wall.y1+'px', 'width': (wall.x2-wall.x1-1)+'px', 'height': (wall.y2-wall.y1-1)+'px', 'background-color': wall.color};
+			}
+			$scope.player.x=0;
+			$scope.player.y=0;
 		}
 		
 		function wipeMazeWalls(err){

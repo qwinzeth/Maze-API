@@ -8,11 +8,12 @@
 		<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.min.js'></script>
 		<script type='text/javascript' src='js/controllers/MazeCtrl.js'></script>
 	</head>
-	<body ng-controller='MazeCtrl'>
+	<body ng-controller='MazeCtrl' ng-keydown='keyDown($event);'>
 		<div>
 			<div class='maze-container'>
+				<div class='maze-player' style='left: {{player.x}}px; top: {{player.y}}px'><img src='img/player.png' /></div>
 				<div class='maze-error'>{{mazeError}}</div>
-				<div class='maze-wall' ng-class='{"maze-wall-selected": newMazeWall._id==wall._id}' ng-repeat='wall in mazeWalls' ng-click='selectWall(wall);' style="left: {{wall.x1}}px; top: {{wall.y1}}px; width: {{wall.x2-wall.x1-1}}px; height: {{wall.y2-wall.y1-1}}px; background-color: {{wall.color}}"></div>
+				<div class='maze-wall' ng-class='{"maze-wall-selected": newMazeWall._id==wall._id}' ng-repeat='wall in mazeWalls' ng-click='selectWall(wall);' ng-style="wall.cssStyle"></div>
 				<div class='maze-potential-wall' style="left: {{newMazeWall.x1}}px; top: {{newMazeWall.y1}}px; width: {{newMazeWall.width-1}}px; height: {{newMazeWall.height-1}}px; background-color: {{newMazeWall.color}}"></div>
 			</div>
 			<div class='maze-new-maze-wall-controls'>
@@ -24,6 +25,9 @@
 				<div><input type='button' value='New Maze Wall' ng-click='postMazeWall();' /></div>
 				<div ng-show='newMazeWall._id'><input type='button' value='Update Maze Wall' ng-click='updateMazeWall();' /></div>
 				<div ng-show='newMazeWall._id'><input type='button' value='Delete Maze Wall' ng-click='deleteMazeWall();' /></div>
+				<div>
+					<div>Player Speed: <input ng-model='player.jump' /></div>
+				</div>
 			</div>
 		</div>
 		<div>Maze ID: <input ng-model='mazeID' /></div>
