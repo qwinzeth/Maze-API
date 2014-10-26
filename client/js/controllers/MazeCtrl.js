@@ -1,7 +1,7 @@
 var mazeApp = angular.module('mazeApp', []);
 
 mazeApp.controller('MazeCtrl', function ($scope, $http) {
-	angular.element(document).ready(getMaze);
+	angular.element(document).ready(getMazes);
 
 	$scope.player={
 		x: 0,
@@ -11,15 +11,24 @@ mazeApp.controller('MazeCtrl', function ($scope, $http) {
 		height: 29
 	};
 
-	$scope.mazeWalls=[];
+	$scope.mazeSelectionPairs=[];
 	$scope.mazeError="";
-	$scope.mazeID=0;
+	$scope.maze={
+		_id: null,
+		walls: [],
+		mazename: "",
+		startx: 0,
+		starty: 0,
+		finishx: 368,
+		finishy: 368
+	};
 
 	$scope.keyDown=keyDown;
 
 	$scope.selectWall=selectMazeWall;
 	
 	$scope.getMaze=getMaze;
+	$scope.postMaze=postMaze;
 	$scope.postMazeWall=postMazeWall;
 	$scope.updateMazeWall=updateMazeWall;
 	$scope.deleteMazeWall=deleteMazeWall;
@@ -56,8 +65,8 @@ mazeApp.controller('MazeCtrl', function ($scope, $http) {
 			return;
 		}
 		
-		for(var i=0;i<$scope.mazeWalls.length;i++){
-			var cwall=$scope.mazeWalls[i];
+		for(var i=0;i<$scope.maze.walls.length;i++){
+			var cwall=$scope.maze.walls[i];
 			if(newx+$scope.player.width>=cwall.x1&&newx<=cwall.x2&&newy+$scope.player.height>=cwall.y1&&newy<=cwall.y2){
 				return;
 			}
@@ -76,29 +85,56 @@ mazeApp.controller('MazeCtrl', function ($scope, $http) {
 		$scope.newMazeWall.color=mazeWall.color;
 	}
 	
+	function getMazes(){
+		$http.get('/api/maze').success(getMazesCompleted).error(showError);
+		
+		function getMazesCompleted(data){
+			$scope.mazeSelectionPairs=data;
+			if($scope.mazeSelectionPairs.length>0){
+				$scope.maze._id=data[0]._id;
+				getMaze();
+			}
+		}
+	}
+	
 	function getMaze(){
-		$http.get('/api/maze/'+$scope.mazeID).success(getMazeCompleted).error(wipeMazeWalls);
+		$http.get('/api/maze/'+$scope.maze._id).success(getMazeCompleted).error(wipeMazeWalls);
 
 		function getMazeCompleted(data){
 			$scope.mazeError="";
-			$scope.mazeWalls=data;
-			for(var i=0;i<$scope.mazeWalls.length;i++){
-				var wall=$scope.mazeWalls[i];
+			$scope.maze=data;
+			for(var i=0;i<$scope.maze.walls.length;i++){
+				var wall=$scope.maze.walls[i];
 				wall.cssStyle={left: wall.x1+'px', 'top': wall.y1+'px', 'width': (wall.x2-wall.x1-1)+'px', 'height': (wall.y2-wall.y1-1)+'px', 'background-color': wall.color};
 			}
-			$scope.player.x=0;
-			$scope.player.y=0;
+			$scope.player.x=$scope.maze.startx;
+			$scope.player.y=$scope.maze.starty;
 		}
 		
 		function wipeMazeWalls(err){
-			$scope.mazeWalls=[];
+			// Despite perfectly valid JSON being returned from the server, a 500 is received.
+			if(err.walls&&err.walls.length>=0){
+				getMazeCompleted(err);
+				return;
+			}
+			$scope.maze.walls=[];
 			$scope.newMazeWall._id=null;
 			showError(err);
 		}
 	}
 	
+	function postMaze(){
+		$http.post('/api/maze', {maze: $scope.maze}).success(postMazeCompleted).error(showError);
+		
+		function postMazeCompleted(data){
+			$scope.mazeError="";
+			$scope.maze._id=data._id;
+			getMaze();
+		}
+	}
+	
 	function postMazeWall(){
-		$scope.newMazeWall.mazeid=$scope.mazeID;
+		$scope.newMazeWall.mazeid=$scope.maze._id;
 		$scope.newMazeWall.x2=parseInt($scope.newMazeWall.x1)+parseInt($scope.newMazeWall.width);
 		$scope.newMazeWall.y2=parseInt($scope.newMazeWall.y1)+parseInt($scope.newMazeWall.height);
 		$http.post('/api/mazewall', {mazewall: $scope.newMazeWall}).success(postMazeWallCompleted).error(showError);
@@ -111,7 +147,7 @@ mazeApp.controller('MazeCtrl', function ($scope, $http) {
 	}
 	
 	function updateMazeWall(){
-		$scope.newMazeWall.mazeid=$scope.mazeID;
+		$scope.newMazeWall.mazeid=$scope.maze._id;
 		$scope.newMazeWall.x2=parseInt($scope.newMazeWall.x1)+parseInt($scope.newMazeWall.width);
 		$scope.newMazeWall.y2=parseInt($scope.newMazeWall.y1)+parseInt($scope.newMazeWall.height);
 		$http.put('/api/mazewall', {mazewall: $scope.newMazeWall}).success(putMazeWallCompleted).error(showError);

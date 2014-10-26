@@ -1,5 +1,5 @@
 function postMazeWall(mazewall, callback){
-	var MazeWall=require('./models/MazeWall.js');
+	var MazeWall=require('../models/MazeWall.js');
 	var newMazeWall=new MazeWall();	
 	newMazeWall._id=mazewall._id;
 	newMazeWall.mazeid=mazewall.mazeid;

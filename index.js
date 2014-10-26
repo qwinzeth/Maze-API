@@ -1,10 +1,12 @@
 var port=20756;
 var express=require('express');
 var fs=require('fs');
-var getMaze=require('./server/getmaze.js');
-var postMazeWall=require('./server/postMazeWall.js');
-var updateMazeWall=require('./server/updateMazeWall.js');
-var deleteMazeWall=require('./server/deleteMazeWall.js');
+var getMazes=require('./server/maze/getMazes.js');
+var getMaze=require('./server/maze/getMaze.js');
+var postMaze=require('./server/maze/postMaze.js');
+var postMazeWall=require('./server/mazewall/postMazeWall.js');
+var updateMazeWall=require('./server/mazewall/updateMazeWall.js');
+var deleteMazeWall=require('./server/mazewall/deleteMazeWall.js');
 
 //DB
 var dbhandler=require('./server/dbhandler');
@@ -24,17 +26,60 @@ function dbConnected(err, mongoose){
 	app.use(bodyParser.urlencoded({ extended: true }));
 	app.use(bodyParser.json());
 
+	// GET all mazes: /api/maze
+	function getMazesAPIRoute(req, res){
+		getMazes(gotMaze);
+		
+		function gotMaze(err, mazes){
+			if(!err){
+				res.json(mazes);
+			}else{
+				res.writeHead(500, {'Content-Type': 'text/plain'});
+				res.end('Error: '+err);
+			}
+		}
+	}
+
 	// GET a single maze: /api/maze/:id
 	function getMazeByIDAPIRoute(req, res){
 		getMaze(req.params.id, gotMaze);
 
-		function gotMaze(err, mazewalls){
+		function gotMaze(err, maze){
 			if(!err){
-				res.writeHead(200, {'Content-Type': 'application/json'});
-				res.end(JSON.stringify(mazewalls));
+				res.writeHead(500, {'Content-Type': 'application/json'});
+				var mazeJSONString=JSON.stringify(maze);
+				mazeJSONString=mazeJSONString.substring(0, mazeJSONString.length-1);
+				var wallsJSONString=JSON.stringify(maze.walls);
+				mazeJSONString+=", \"walls\":"+wallsJSONString+"}";
+				res.end(mazeJSONString);
 			}else{
 				res.writeHead(500, {'Content-Type': 'text/plain'});
 				res.end('Error: '+err);
+			}
+		}
+	}
+	
+	// POST a new maze: /api/maze
+	// The body must contain the JSON for the new maze.
+	/* maze={
+			mazeid: Number,
+			mazename: String,
+			startx: Number,
+			starty: Number,
+			finishx: Number,
+			finishy: Number
+		}
+	*/
+	function postMazeRoute(req, res){
+		req.body.maze._id=new mongoose.Types.ObjectId();
+		postMaze(req.body.maze, mazePosted);
+		
+		function mazePosted(err){
+			if(err){
+				res.writeHead(500, {'Content-Type': 'text/plain'});
+				res.end('Error: '+err);
+			}else{
+				res.json({_id: req.body.maze._id});
 			}
 		}
 	}
@@ -107,7 +152,9 @@ function dbConnected(err, mongoose){
 
 	app.use('/', express.static('./client/'));
 
+	app.get('/api/maze', getMazesAPIRoute);
 	app.get('/api/maze/:id', getMazeByIDAPIRoute);
+	app.post('/api/maze', postMazeRoute);
 	app.post('/api/mazewall',postMazeWallRoute);
 	app.put('/api/mazewall', putMazeWallRoute);
 	app.delete('/api/mazewall/:id', deleteMazeWallRoute);

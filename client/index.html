@@ -13,7 +13,7 @@
 			<div class='maze-container'>
 				<div class='maze-player' style='left: {{player.x}}px; top: {{player.y}}px'><img src='img/player.png' /></div>
 				<div class='maze-error'>{{mazeError}}</div>
-				<div class='maze-wall' ng-class='{"maze-wall-selected": newMazeWall._id==wall._id}' ng-repeat='wall in mazeWalls' ng-click='selectWall(wall);' ng-style="wall.cssStyle"></div>
+				<div class='maze-wall' ng-class='{"maze-wall-selected": newMazeWall._id==wall._id}' ng-repeat='wall in maze.walls' ng-click='selectWall(wall);' ng-style="wall.cssStyle"></div>
 				<div class='maze-potential-wall' style="left: {{newMazeWall.x1}}px; top: {{newMazeWall.y1}}px; width: {{newMazeWall.width-1}}px; height: {{newMazeWall.height-1}}px; background-color: {{newMazeWall.color}}"></div>
 			</div>
 			<div class='maze-new-maze-wall-controls'>
@@ -30,7 +30,13 @@
 				</div>
 			</div>
 		</div>
-		<div>Maze ID: <input ng-model='mazeID' /></div>
+		<div>Maze Name: <input ng-model='maze.mazename' /></div>
+		<div>
+			<select>
+				<option ng-repeat='mazePair in mazeSelectionPairs' value='{{mazePair._id}}'>{{mazePair.mazename}}</option>
+			</select>
+		</div>
 		<div><input type='button' value='Get Maze' ng-click='getMaze();' /></div>
+		<div ng-show='maze._id'><input type='button' value='New Maze' ng-click='postMaze();' /></div>
 	</body>
 </html>
